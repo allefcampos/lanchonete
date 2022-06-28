@@ -1,13 +1,12 @@
+using Lanchonete.Context;
+using Lanchonete.Repositories;
+using Lanchonete.Repositories.impl;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Lanchonete
 {
@@ -23,6 +22,13 @@ namespace Lanchonete
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Conexão com banco de dados
+            services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            // Injetar os repositórios
+            services.AddTransient<ICategoriaRepository, CategoriaRepository>();
+            services.AddTransient<ILancheRepository, LancheRepository>();
+
             services.AddControllersWithViews();
         }
 
