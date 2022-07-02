@@ -30,6 +30,7 @@ namespace Lanchonete
             // Injetar os repositórios
             services.AddTransient<ICategoriaRepository, CategoriaRepository>();
             services.AddTransient<ILancheRepository, LancheRepository>();
+            services.AddTransient<IPedidoRepository, PedidoRepository>();
 
             // Utilizando session
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
