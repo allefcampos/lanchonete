@@ -1,8 +1,10 @@
 using Lanchonete.Context;
+using Lanchonete.Models;
 using Lanchonete.Repositories;
 using Lanchonete.Repositories.impl;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,7 +31,14 @@ namespace Lanchonete
             services.AddTransient<ICategoriaRepository, CategoriaRepository>();
             services.AddTransient<ILancheRepository, LancheRepository>();
 
-            services.AddControllersWithViews();
+            // Utilizando session
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped(cp => CarrinhoCompra.GetCarrinho(cp));
+            
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
+            services.AddMemoryCache();
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,6 +56,7 @@ namespace Lanchonete
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseSession();
 
             app.UseRouting();
 
@@ -54,6 +64,14 @@ namespace Lanchonete
 
             app.UseEndpoints(endpoints =>
             {
+                //endpoints.MapControllerRoute(
+                //    name: "AdminArea",
+                //    pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}");
+
+                endpoints.MapControllerRoute(name: "categoriaFiltro",
+                   pattern: "Lanche/{action}/{categoria?}",
+                   defaults: new { Controller = "Lanche", action = "List" });
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
