@@ -1,5 +1,6 @@
 ﻿using Lanchonete.Models;
 using Lanchonete.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -23,12 +24,15 @@ namespace Lanchonete.Controllers
         {
             return View();
         }
+
+        [Authorize]
         public IActionResult Checkout()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult Checkout(Pedido pedido)
         {
             decimal precoTotalPedido = 0.0m;

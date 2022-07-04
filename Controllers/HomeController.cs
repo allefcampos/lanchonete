@@ -27,6 +27,11 @@ namespace Lanchonete.Controllers
             return View(homeView);
         }
 
+        public ViewResult AccessDenied()
+        {
+            return View();
+        }
+
         //public IActionResult Privacy()
         //{
         //    return View();

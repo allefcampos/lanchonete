@@ -22,7 +22,7 @@ namespace Lanchonete.Controllers
             //var lanches = _lancheRepository.Lanches;
             //return View(lanches);
 
-            string _categoria = categoria;
+            //string _categoria = categoria;
             IEnumerable<Lanche> lanches;
             string categoriaAtual = string.Empty;
 
@@ -33,13 +33,16 @@ namespace Lanchonete.Controllers
             }
             else
             {
-                if (string.Equals("Normal", _categoria, StringComparison.OrdinalIgnoreCase))
-                    lanches = _lancheRepository.Lanches.Where(p => p.Categoria.CategoriaNome.Equals("Normal")).OrderBy(p => p.Nome);
-                else
-                    lanches = _lancheRepository.Lanches.Where(p => p.Categoria.CategoriaNome.Equals("Natural")).OrderBy(p => p.Nome);
+                //if (string.Equals("Normal", _categoria, StringComparison.OrdinalIgnoreCase))
+                //    lanches = _lancheRepository.Lanches.Where(p => p.Categoria.CategoriaNome.Equals("Normal")).OrderBy(p => p.Nome);
+                //else
+                //    lanches = _lancheRepository.Lanches.Where(p => p.Categoria.CategoriaNome.Equals("Natural")).OrderBy(p => p.Nome);
 
-                categoriaAtual = _categoria;
-                
+                lanches = _lancheRepository.Lanches
+                           .Where(p => p.Categoria.CategoriaNome.Equals(categoria))
+                           .OrderBy(p => p.Nome);
+
+                categoriaAtual = categoria;
             }
 
             var lancheListViewModel = new LancheListViewModel

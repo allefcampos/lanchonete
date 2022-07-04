@@ -5,10 +5,12 @@ using Lanchonete.Repositories.impl;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ReflectionIT.Mvc.Paging;
 
 namespace Lanchonete
 {
@@ -27,6 +29,14 @@ namespace Lanchonete
             // Conexão com banco de dados
             services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            // Configurando o Identity
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
+
+            // Ao receber o erro 403 ele vai redirecionar para o caminho abaixo! 
+            services.ConfigureApplicationCookie(options => options.AccessDeniedPath = "/Home/AccessDenied");
+
             // Injetar os repositórios
             services.AddTransient<ICategoriaRepository, CategoriaRepository>();
             services.AddTransient<ILancheRepository, LancheRepository>();
@@ -37,6 +47,13 @@ namespace Lanchonete
             services.AddScoped(cp => CarrinhoCompra.GetCarrinho(cp));
             
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
+            // Adicionando serviço de paginação.
+            services.AddPaging(options => {
+                options.ViewName = "Bootstrap4";
+                options.PageParameterName = "pageindex";
+            });
+
 
             services.AddMemoryCache();
             services.AddSession();
@@ -58,6 +75,7 @@ namespace Lanchonete
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSession();
+            app.UseAuthentication();
 
             app.UseRouting();
 
@@ -65,9 +83,9 @@ namespace Lanchonete
 
             app.UseEndpoints(endpoints =>
             {
-                //endpoints.MapControllerRoute(
-                //    name: "AdminArea",
-                //    pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                    name: "AdminArea",
+                    pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}");
 
                 endpoints.MapControllerRoute(name: "categoriaFiltro",
                    pattern: "Lanche/{action}/{categoria?}",
