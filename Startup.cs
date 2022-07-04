@@ -1,3 +1,4 @@
+using Lanchonete.Areas.Admin.Services;
 using Lanchonete.Context;
 using Lanchonete.Models;
 using Lanchonete.Repositories;
@@ -41,6 +42,9 @@ namespace Lanchonete
             services.AddTransient<ICategoriaRepository, CategoriaRepository>();
             services.AddTransient<ILancheRepository, LancheRepository>();
             services.AddTransient<IPedidoRepository, PedidoRepository>();
+
+            // Injetar os services
+            services.AddScoped<RelatorioVendasService>();
 
             // Utilizando session
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
